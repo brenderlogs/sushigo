@@ -235,9 +235,9 @@ def main():
     print "p2's table: " + str(p2_table) + '\n'
 
     if score_diff > 0:
-        print "p1 wins by " + str(score_diff) + " points"
+        print "p1 wins by " + str(score_diff)
     elif score_diff < 0:
-        print "p2 wins by " + str(-score_diff) + " points"
+        print "p2 wins by " + str(-score_diff)
     else:
         print "p1 and p2 rejoice in their shared victory!"
 
