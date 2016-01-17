@@ -23,8 +23,7 @@ class Deck(object):
 class GameState(object):
     def __init__(self):
         D = Deck()
-        #self.p1_hand, self.p2_hand = D.deal(6)
-        self.p1_hand, self.p2_hand = ['DoubleMaki', 'Sashimi', 'TripleMaki', 'Chopsticks', 'SalmonNigiri', 'TripleMaki'], ['SquidNigiri', 'SalmonNigiri', 'EggNigiri', 'Dumpling', 'Dumpling', 'SquidNigiri']
+        self.p1_hand, self.p2_hand = D.deal(6)
         self.p1_table, self.p2_table = [], []
 
     def swap(self):
@@ -215,7 +214,7 @@ def main():
                 p1_select = [0, p1_input]
 
             #Find optimal robot move.
-            p2_select = find_p2_best_move(deepcopy(G))[0]
+            p2_select = find_p2_best_move(deepcopy(G), -1000, 1000)[0]
 
             #Pretty printing for robot move.
             if p2_select[0] == 0:
@@ -242,7 +241,7 @@ def main():
         print "p1 and p2 rejoice in their shared victory!"
 
 #Minimax for p2.
-def find_p2_best_move(G):
+def find_p2_best_move(G, alpha, beta):
     p1_hand, p2_hand = G.get_hands()
     p1_table, p2_table = G.get_tables()
 
@@ -285,27 +284,20 @@ def find_p2_best_move(G):
         p2_moves += p2_swaps
 
     #Minimax it up.
-    mv_ev_list = []
+    ev_p2 = 1000
     for p2_move in p2_moves:
-        p1_bestmv, p1_bestev = p1_moves[0], -1000
 
+        ev_p1 = -1000
         for p1_move in p1_moves:
             H = deepcopy(G)
             H.play(p1_move, p2_move)
-            p1_mv, p1_ev = find_p2_best_move(H)
+            ev_p1 = max(ev_p1, find_p2_best_move(H, alpha, beta)[1])
 
-            if p1_ev > p1_bestev:
-                p1_bestmv, p1_bestev = p1_mv, p1_ev
-        mv_ev_list.append([p2_move, p1_bestev])
+        if ev_p1 < ev_p2:
+            p2_bestmv = p2_move
+        ev_p2 = min(ev_p1, ev_p2)
 
-    p2_bestmv, p2_bestev = p2_moves[0], 1000
-
-    for mv in mv_ev_list:
-        if mv[1] < p2_bestev:
-            p2_bestmv = mv[0]
-            p2_bestev = mv[1]
-
-    return p2_bestmv, p2_bestev
+    return p2_bestmv, ev_p2
 
 if __name__ == '__main__':
     main()
