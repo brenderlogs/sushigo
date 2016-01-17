@@ -283,21 +283,37 @@ def find_p2_best_move(G, alpha, beta):
         p2_swaps += wasabi_swap_reorders
         p2_moves += p2_swaps
 
-    #Minimax it up.
+    #Minimax it up with alpha-beta pruning, p2 is the minimizing player.
     ev_p2 = 1000
     for p2_move in p2_moves:
-
         ev_p1 = -1000
+
         for p1_move in p1_moves:
             H = deepcopy(G)
             H.play(p1_move, p2_move)
-            ev_p1 = max(ev_p1, find_p2_best_move(H, alpha, beta)[1])
 
+            #Hold onto the best outcome for p1 from this node, pass the best outcomes
+            #seen so far for each player down the call stack.
+            ev_p1 = max(ev_p1, find_p2_best_move(H, ev_p1, ev_p2)[1])
+
+            #If we already know p2 can force a better outcome from an earlier move than
+            #p1 can force from this one, no need to explore any more children of this node.
+            if beta < ev_p1:
+                break
+
+        #Hold onto the best outcome and best move for p2 from this node. The value
+        #of a p2 move is the value of the p1 move that would follow it when p1 plays
+        #using minimax, i.e. ev_p1.
         if ev_p1 < ev_p2:
-            p2_bestmv = p2_move
+            p2_best_move = p2_move
         ev_p2 = min(ev_p1, ev_p2)
 
-    return p2_bestmv, ev_p2
+        #If we already know p1 can force a better outcome from an earlier move than
+        #p2 can force from this one, no need to explore any more children of this node.
+        if alpha > ev_p2:
+            break
+
+    return p2_best_move, ev_p2
 
 if __name__ == '__main__':
     main()

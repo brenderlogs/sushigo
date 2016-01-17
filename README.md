@@ -1,9 +1,9 @@
 sushigo
 ===============
 
-Use the command line to play with a friend or the computer. Currently the game is only one round, with no puddings, and the hand size is set to six so that the minimax computer can explore the entire game tree without taking all day. Moreover, the first move is made with full knowledge of all cards in both players' hands.
+Use the command line to play with a friend or the computer. Currently the game is only one round, with no puddings, and the hand size is set to six so that the minimax computer can explore the game tree without taking all day. Moreover, the first move is made with full knowledge of all cards in both players' hands.
 
-Future work: Game tree pruning and increased hand size, closed hands on the first move, implement puddings and multiple rounds.
+Future work: More game tree pruning and increased hand size, closed hands on the first move, implement puddings and multiple rounds.
 
 Playing is fairly simple, just type the name of the card you would like to take from your hand and place on your table. To use a chopsticks card on your table, type `Swap for C and D`, where C and D are the names of the cards in your hand you would like to swap with the chopsticks. The cards are played onto your table in the order you listed them in (this is important with wasabi).
 
