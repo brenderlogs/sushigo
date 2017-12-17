@@ -110,32 +110,8 @@ class GameState(object):
             print 'Invalid play'
 
     def score(self):
-        p1_total, p1_maki = 0, 0
-
-        p1_total += 5 * (self.p1_table.count('Tempura') / 2)
-        p1_total += 10 * (self.p1_table.count('Sashimi') / 3)
-        p1_total += (self.p1_table.count('Dumpling') * (self.p1_table.count('Dumpling') + 1)) / 2
-        p1_maki += self.p1_table.count('SingleMaki') + 2* self.p1_table.count('DoubleMaki') + 3 * self.p1_table.count('TripleMaki')
-        p1_total += self.p1_table.count('EggNigiri')
-        p1_total += 2 * self.p1_table.count('SalmonNigiri')
-        p1_total += 3 * self.p1_table.count('SquidNigiri')
-        p1_total += 3 * self.p1_table.count('EggNigiriWasabi')
-        p1_total += 6 * self.p1_table.count('SalmonNigiriWasabi')
-        p1_total += 9 * self.p1_table.count('SquidNigiriWasabi')
-
-        p2_total, p2_maki = 0, 0
-
-        p2_total += 5 * (self.p2_table.count('Tempura') / 2)
-        p2_total += 10 * (self.p2_table.count('Sashimi') / 3)
-        p2_total += (self.p2_table.count('Dumpling') * (self.p2_table.count('Dumpling') + 1)) / 2
-        p2_maki += self.p2_table.count('SingleMaki') + 2 * self.p2_table.count('DoubleMaki') + 3 * self.p2_table.count('TripleMaki')
-        p2_total += self.p2_table.count('EggNigiri')
-        p2_total += 2 * self.p2_table.count('SalmonNigiri')
-        p2_total += 3 * self.p2_table.count('SquidNigiri')
-        p2_total += 3 * self.p2_table.count('EggNigiriWasabi')
-        p2_total += 6 * self.p2_table.count('SalmonNigiriWasabi')
-        p2_total += 9 * self.p2_table.count('SquidNigiriWasabi')
-
+        p1_total, p1_maki = eval_table(self.p1_table)
+        p2_total, p2_maki = eval_table(self.p2_table)
         maki_diff = 0
 
         if p1_maki > p2_maki:
@@ -148,6 +124,22 @@ class GameState(object):
                 maki_diff = -3
 
         return p1_total - p2_total + maki_diff
+
+def eval_table(table):
+    total, maki = 0, 0
+
+    total += 5 * (table.count('Tempura') / 2)
+    total += 10 * (table.count('Sashimi') / 3)
+    total += (table.count('Dumpling') * (table.count('Dumpling') + 1)) / 2
+    maki += table.count('SingleMaki') + 2 * table.count('DoubleMaki') + 3 * table.count('TripleMaki')
+    total += table.count('EggNigiri')
+    total += 2 * table.count('SalmonNigiri')
+    total += 3 * table.count('SquidNigiri')
+    total += 3 * table.count('EggNigiriWasabi')
+    total += 6 * table.count('SalmonNigiriWasabi')
+    total += 9 * table.count('SquidNigiriWasabi')
+
+    return total, maki
 
 def main():
     G = GameState()
