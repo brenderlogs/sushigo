@@ -109,11 +109,9 @@ class GameState(object):
         else:
             print 'Invalid play'
 
-    def eval_tables(self):
-        p1_total = 0
-        p1_maki = 0
+    def score(self):
+        p1_total, p1_maki = 0, 0
 
-        #Integer division!
         p1_total += 5 * (self.p1_table.count('Tempura') / 2)
         p1_total += 10 * (self.p1_table.count('Sashimi') / 3)
         p1_total += (self.p1_table.count('Dumpling') * (self.p1_table.count('Dumpling') + 1)) / 2
@@ -125,10 +123,8 @@ class GameState(object):
         p1_total += 6 * self.p1_table.count('SalmonNigiriWasabi')
         p1_total += 9 * self.p1_table.count('SquidNigiriWasabi')
 
-        p2_total = 0
-        p2_maki = 0
+        p2_total, p2_maki = 0, 0
 
-        #Integer division!
         p2_total += 5 * (self.p2_table.count('Tempura') / 2)
         p2_total += 10 * (self.p2_table.count('Sashimi') / 3)
         p2_total += (self.p2_table.count('Dumpling') * (self.p2_table.count('Dumpling') + 1)) / 2
@@ -140,26 +136,18 @@ class GameState(object):
         p2_total += 6 * self.p2_table.count('SalmonNigiriWasabi')
         p2_total += 9 * self.p2_table.count('SquidNigiriWasabi')
 
-        #Calculate maki points.
-        if p1_maki > p2_maki and p2_maki > 0:
-            p1_total += 6
-            p2_total += 3
+        maki_diff = 0
 
-        if p2_maki > p1_maki and p1_maki > 0:
-            p2_total += 6
-            p1_total += 3
+        if p1_maki > p2_maki:
+            maki_diff = 6
+            if p2_maki > 0:
+                maki_diff = 3
+        if p2_maki > p1_maki:
+            maki_diff = -6
+            if p1_maki > 0:
+                maki_diff = -3
 
-        if p2_maki == p1_maki and p1_maki > 0:
-            p2_total += 3
-            p1_total += 3
-
-        if p1_maki > 0 and p2_maki == 0:
-            p1_total += 6
-
-        if p2_maki > 0 and p1_maki == 0:
-            p2_total += 6
-
-        return p1_total - p2_total
+        return p1_total - p2_total + maki_diff
 
 def main():
     G = GameState()
@@ -227,7 +215,7 @@ def main():
         G.play(p1_select,p2_select)
 
     p1_table, p2_table = G.get_tables()
-    score_diff = G.eval_tables()
+    score_diff = G.score()
 
     print '\n'
     print "p1's table: " + str(p1_table) + '\n'
@@ -249,7 +237,7 @@ def find_p2_best_move(G, alpha, beta):
     if len(p2_hand) == 1:
         H = deepcopy(G)
         H.play([0,p1_hand[0]],[0,p2_hand[0]])
-        return [0,p2_hand[0]], H.eval_tables()
+        return [0,p2_hand[0]], H.score()
 
     #Collect all possible moves for p1. Moves are cards in hand or chopstick swaps.
     p1_moves = [[0,c] for c in set(p1_hand)]
